@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from "../context/AuthContext"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { collection, doc, getDocs } from "firebase/firestore"
 import { db } from "../firebase"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -16,12 +16,12 @@ import {
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
-export default function Flashcard() {
+function FlashcardContent() {
   const { user, loading } = useAuth()
   const [flashcards, setFlashcards] = useState([])
   const [flipped, setFlipped] = useState({})
   const router = useRouter()
-
+  
   const searchParams = useSearchParams()
   const search = searchParams.get('id')
 
@@ -34,12 +34,12 @@ export default function Flashcard() {
   useEffect(() => {
     async function getFlashcard() {
       if (!search || !user) return
-
+      
       try {
         const colRef = collection(doc(collection(db, 'users'), user.uid), search)
         const docs = await getDocs(colRef)
         const flashcards = []
-
+        
         docs.forEach((doc) => {
           flashcards.push({ id: doc.id, ...doc.data() })
         })
@@ -72,7 +72,7 @@ export default function Flashcard() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', py: 6, position: 'relative', overflow: 'hidden' }}>
-      {/* Animated Background Orbs */}
+      {/* Background Orbs */}
       <Box
         sx={{
           position: 'fixed',
@@ -106,9 +106,9 @@ export default function Flashcard() {
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-          <IconButton
+          <IconButton 
             onClick={() => router.push('/flashcards')}
-            sx={{
+            sx={{ 
               color: 'white',
               mr: 2,
               background: 'rgba(255, 255, 255, 0.05)',
@@ -130,7 +130,6 @@ export default function Flashcard() {
           </Box>
         </Box>
 
-        {/* Simplified Modern Flashcards - Replace existing Grid */}
         <Grid container spacing={3}>
           {flashcards.map((flashcard, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
@@ -141,16 +140,12 @@ export default function Flashcard() {
                   cursor: 'pointer',
                   position: 'relative',
                   borderRadius: 3,
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  transition: 'transform 0.2s ease',
                   '&:hover': {
                     transform: 'translateY(-4px)',
-                    '& .card-shine': {
-                      opacity: 0.5,
-                    }
                   }
                 }}
               >
-                {/* Card Container */}
                 <Box
                   sx={{
                     position: 'relative',
@@ -161,7 +156,7 @@ export default function Flashcard() {
                     transform: flipped[index] ? 'rotateY(180deg)' : 'rotateY(0)',
                   }}
                 >
-                  {/* Front Side */}
+                  {/* Front */}
                   <Box
                     sx={{
                       position: 'absolute',
@@ -176,39 +171,21 @@ export default function Flashcard() {
                       border: '1px solid rgba(255, 255, 255, 0.12)',
                       borderRadius: 3,
                       boxShadow: '0 4px 24px rgba(0, 0, 0, 0.15)',
-                      overflow: 'hidden',
                     }}
                   >
-                    {/* Shine Effect */}
-                    <Box
-                      className="card-shine"
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                      }}
-                    />
-
-                    <Typography
-                      sx={{
+                    <Typography 
+                      sx={{ 
                         color: 'white',
                         fontSize: '1.1rem',
                         fontWeight: 500,
                         textAlign: 'center',
                         lineHeight: 1.6,
-                        zIndex: 1,
                       }}
                     >
                       {flashcard.front}
                     </Typography>
                   </Box>
-
-                  {/* Back Side */}
+                  {/* Back */}
                   <Box
                     sx={{
                       position: 'absolute',
@@ -226,8 +203,8 @@ export default function Flashcard() {
                       boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
                     }}
                   >
-                    <Typography
-                      sx={{
+                    <Typography 
+                      sx={{ 
                         color: 'white',
                         fontSize: '1.1rem',
                         fontWeight: 500,
@@ -243,8 +220,19 @@ export default function Flashcard() {
             </Grid>
           ))}
         </Grid>
-
       </Container>
     </Box>
+  )
+}
+
+export default function Flashcard() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#0a0a0a' }}>
+        <CircularProgress sx={{ color: '#667eea' }} />
+      </Box>
+    }>
+      <FlashcardContent />
+    </Suspense>
   )
 }
