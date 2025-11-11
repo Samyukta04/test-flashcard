@@ -1,11 +1,23 @@
 'use client'
 
+// Polyfill for Promise.withResolvers (required for react-pdftotext)
+if (typeof Promise.withResolvers === 'undefined') {
+  Promise.withResolvers = function () {
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 import { useAuth } from '../context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { db } from '../firebase'
 import { doc, collection, setDoc, getDoc, writeBatch } from 'firebase/firestore'
-import pdfToText from 'react-pdftotext'
+// import pdfToText from 'react-pdftotext'
 import {
   Container,
   TextField,
@@ -80,8 +92,8 @@ export default function Generate() {
 
     setGenerating(true)
     try {
-      const response = await fetch('/api/generate', { 
-        method: 'POST', 
+      const response = await fetch('/api/generate', {
+        method: 'POST',
         body: text,
       })
       const data = await response.json()
@@ -215,7 +227,7 @@ export default function Generate() {
           </Typography>
         </Box>
 
-        <Box sx={{ 
+        <Box sx={{
           p: 4,
           background: 'rgba(255, 255, 255, 0.05)',
           backdropFilter: 'blur(20px) saturate(180%)',
@@ -226,8 +238,8 @@ export default function Generate() {
           mb: 4,
         }}>
           {/* Tabs for Text/PDF */}
-          <Tabs 
-            value={tabValue} 
+          <Tabs
+            value={tabValue}
             onChange={(e, newValue) => setTabValue(newValue)}
             sx={{
               mb: 3,
@@ -260,7 +272,7 @@ export default function Generate() {
                 multiline
                 rows={8}
                 variant="outlined"
-                sx={{ 
+                sx={{
                   mb: 3,
                   '& .MuiOutlinedInput-root': {
                     color: 'white',
@@ -292,7 +304,7 @@ export default function Generate() {
                 onChange={handleFileUpload}
                 style={{ display: 'none' }}
               />
-              
+
               <Box
                 onClick={() => !extracting && fileInputRef.current?.click()}
                 sx={{
@@ -323,9 +335,9 @@ export default function Generate() {
                     <Typography sx={{ color: 'white', mb: 1, fontWeight: 600 }}>
                       {uploadedFile.name}
                     </Typography>
-                    <Chip 
-                      label="✓ Text extracted successfully!" 
-                      sx={{ 
+                    <Chip
+                      label="✓ Text extracted successfully!"
+                      sx={{
                         mb: 2,
                         bgcolor: 'rgba(76, 175, 80, 0.2)',
                         color: '#4caf50',
@@ -350,8 +362,8 @@ export default function Generate() {
               </Box>
 
               {text && (
-                <Box sx={{ 
-                  p: 3, 
+                <Box sx={{
+                  p: 3,
                   background: 'rgba(255,255,255,0.03)',
                   borderRadius: 2,
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -360,9 +372,9 @@ export default function Generate() {
                   <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 2 }}>
                     Extracted Text Preview:
                   </Typography>
-                  <Typography 
-                    sx={{ 
-                      color: 'rgba(255,255,255,0.8)', 
+                  <Typography
+                    sx={{
+                      color: 'rgba(255,255,255,0.8)',
                       fontSize: '0.9rem',
                       maxHeight: '150px',
                       overflow: 'auto',
@@ -375,14 +387,14 @@ export default function Generate() {
               )}
             </Box>
           )}
-          
+
           <Button
             variant="contained"
             onClick={handleSubmit}
             disabled={generating || !text.trim()}
             startIcon={generating ? <CircularProgress size={20} /> : <AutoAwesomeIcon />}
             fullWidth
-            sx={{ 
+            sx={{
               bgcolor: '#667eea',
               color: 'white',
               py: 1.8,
@@ -411,7 +423,7 @@ export default function Generate() {
               <Button
                 variant="contained"
                 onClick={() => setOpen(true)}
-                sx={{ 
+                sx={{
                   bgcolor: 'rgba(102, 126, 234, 0.8)',
                   backdropFilter: 'blur(10px)',
                   color: 'white',
@@ -478,10 +490,10 @@ export default function Generate() {
                           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
                         }}
                       >
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            color: 'white', 
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: 'white',
                             textAlign: 'center',
                             textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
                           }}
@@ -509,10 +521,10 @@ export default function Generate() {
                           boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)',
                         }}
                       >
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            color: 'white', 
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: 'white',
                             textAlign: 'center',
                             textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
                           }}
@@ -528,8 +540,8 @@ export default function Generate() {
           </Box>
         )}
 
-        <Dialog 
-          open={open} 
+        <Dialog
+          open={open}
           onClose={() => setOpen(false)}
           PaperProps={{
             sx: {
@@ -552,7 +564,7 @@ export default function Generate() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Biology Chapter 5"
               variant="outlined"
-              sx={{ 
+              sx={{
                 '& .MuiOutlinedInput-root': {
                   color: 'white',
                   '& fieldset': {
@@ -572,10 +584,10 @@ export default function Generate() {
             <Button onClick={() => setOpen(false)} sx={{ color: 'rgba(255,255,255,0.7)' }}>
               Cancel
             </Button>
-            <Button 
-              onClick={saveFlashcards} 
+            <Button
+              onClick={saveFlashcards}
               variant="contained"
-              sx={{ 
+              sx={{
                 bgcolor: '#667eea',
                 '&:hover': { bgcolor: '#764ba2' }
               }}
