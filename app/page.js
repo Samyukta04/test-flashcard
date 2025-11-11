@@ -1,173 +1,356 @@
 "use client";
 
-import Image from "next/image";
-import getStripe from "../utils/get-stripe";
-
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import Head from "next/head";
-import { AppBar, Button, Toolbar, Typography, Container, Box, Grid } from "@mui/material";
-import { useRouter } from "next/navigation"; // Use "next/navigation" for App Router
-
-
+import { signInWithGoogle } from "./firebase";
+import { useAuth } from './context/AuthContext';
+import { Button, Container, Box, Grid, Typography, Chip } from "@mui/material";
+import { useRouter } from "next/navigation";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import SpeedIcon from '@mui/icons-material/Speed';
+import DevicesIcon from '@mui/icons-material/Devices';
 
 export default function Home() {
+  const { user, loading } = useAuth();
   const router = useRouter();
-  const handleSubmit = async () => {
+
+  const handleSignIn = async () => {
     try {
-      const checkoutSession = await fetch('/api/checkout_session', {
-        method: 'POST',
-        headers: {
-          origin: 'http://localhost:3000', // Change this once deployed
-        },
-      });
-
-      if (!checkoutSession.ok) {
-        console.error("Error creating checkout session");
-        return;
-      }
-
-      const checkoutSessionJson = await checkoutSession.json();
-      const stripe = await getStripe();
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: checkoutSessionJson.id,
-      });
-
-      if (error) {
-        console.warn("Stripe redirect error: ", error.message);
-      }
-    } catch (err) {
-      console.error("Error during checkout: ", err);
+      await signInWithGoogle();
+    } catch (error) {
+      console.error("Sign in error:", error);
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#0a0a0a' }}>
+        <Typography variant="h5" sx={{ color: 'white' }}>Loading...</Typography>
+      </Box>
+    );
+  }
+
   return (
-    <Container maxWidth="xl">
-      <Head>
-        <title>Flashcard SaaS</title>
-        <meta name="description" content="Create flashcards from your text" />
-      </Head>
+    <Box sx={{ bgcolor: '#0a0a0a', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Animated Background Gradient Orbs */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: '-50%',
+          right: '-20%',
+          width: '800px',
+          height: '800px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+          animation: 'float 20s ease-in-out infinite',
+          '@keyframes float': {
+            '0%, 100%': { transform: 'translate(0, 0)' },
+            '50%': { transform: 'translate(-100px, 100px)' },
+          }
+        }}
+      />
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: '-30%',
+          left: '-10%',
+          width: '600px',
+          height: '600px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(118, 75, 162, 0.15) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+          animation: 'float 25s ease-in-out infinite reverse',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '500px',
+          height: '500px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(79, 172, 254, 0.1) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+          animation: 'float 30s ease-in-out infinite',
+        }}
+      />
 
-      {/* Navigation Bar */}
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Flashcard SaaS
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+        {/* Hero Section */}
+        <Box sx={{ pt: { xs: 10, md: 15 }, pb: { xs: 8, md: 12 }, textAlign: 'center' }}>
+          <Chip 
+            label="✨ AI-Powered Flashcards" 
+            sx={{ 
+              mb: 4,
+              px: 2,
+              py: 2.5,
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              background: 'rgba(102, 126, 234, 0.15)',
+              backdropFilter: 'blur(10px)',
+              color: '#667eea',
+              border: '1px solid rgba(102, 126, 234, 0.3)',
+            }}
+          />
+          
+          <Typography
+            sx={{
+              fontSize: { xs: '3rem', sm: '5rem', md: '7rem', lg: '9rem' },
+              fontWeight: 700,
+              lineHeight: 0.9,
+              mb: 4,
+              letterSpacing: '-0.04em',
+              background: 'linear-gradient(135deg, #ffffff 0%, #667eea 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            Learn
+            <br />
+            Smarter
           </Typography>
-          <SignedOut>
-            <Button color="inherit" href="/sign-in">Log In</Button>
-            <Button color="inherit" href="/sign-up">Sign Up</Button>
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </Toolbar>
-      </AppBar>
 
-      {/* Hero Section */}
-      <Box sx={{ textAlign: "center", my: 4 }}>
-        <Typography variant="h2" gutterBottom>
-          Welcome to Flashcard SaaS
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          The easiest way to make flashcards from your text
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-          onClick={() => router.push("/sign-up")}
+          <Typography
+            variant="h5"
+            sx={{
+              maxWidth: '600px',
+              mx: 'auto',
+              mb: 5,
+              color: 'rgba(255,255,255,0.7)',
+              fontWeight: 400,
+              fontSize: { xs: '1.1rem', md: '1.3rem' },
+              lineHeight: 1.6,
+            }}
+          >
+            Transform any text into interactive flashcards with AI.
+            Study efficiently, remember everything.
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              size="large"
+              onClick={() => user ? router.push('/generate') : handleSignIn()}
+              endIcon={<ArrowForwardIcon />}
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                px: 4,
+                py: 1.8,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                borderRadius: 2,
+                textTransform: 'none',
+                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.5)',
+                },
+              }}
+            >
+              Get Started Free
+            </Button>
+            <Button
+              size="large"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              sx={{
+                background: 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(10px)',
+                color: 'white',
+                px: 4,
+                py: 1.8,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                borderRadius: 2,
+                textTransform: 'none',
+                border: '1px solid rgba(255,255,255,0.1)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  background: 'rgba(255,255,255,0.1)',
+                  borderColor: 'rgba(255,255,255,0.2)',
+                },
+              }}
+            >
+              See Features
+            </Button>
+          </Box>
+
+          {/* Stats */}
+          <Box sx={{ display: 'flex', gap: 6, justifyContent: 'center', mt: 10, flexWrap: 'wrap' }}>
+            {[
+              { value: '10K+', label: 'Active Users' },
+              { value: '500K+', label: 'Flashcards Created' },
+              { value: '99%', label: 'Satisfaction Rate' },
+            ].map((stat, i) => (
+              <Box key={i} sx={{ textAlign: 'center' }}>
+                <Typography variant="h3" sx={{ fontWeight: 700, color: '#667eea', mb: 0.5 }}>
+                  {stat.value}
+                </Typography>
+                <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
+                  {stat.label}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Features Section */}
+        <Box id="features" sx={{ py: { xs: 8, md: 12 } }}>
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: { xs: '2.5rem', md: '4rem' },
+              fontWeight: 700,
+              mb: 8,
+              textAlign: 'center',
+              color: 'white',
+            }}
+          >
+            Why Choose Us?
+          </Typography>
+
+          <Grid container spacing={4}>
+            {[
+              {
+                icon: <AutoAwesomeIcon sx={{ fontSize: 50 }} />,
+                title: 'AI-Powered Generation',
+                desc: 'Our advanced AI analyzes your text and creates perfectly structured flashcards in seconds.',
+              },
+              {
+                icon: <SpeedIcon sx={{ fontSize: 50 }} />,
+                title: 'Lightning Fast',
+                desc: 'Generate hundreds of flashcards in seconds. No more manual card creation.',
+              },
+              {
+                icon: <DevicesIcon sx={{ fontSize: 50 }} />,
+                title: 'Study Anywhere',
+                desc: 'Access your flashcards on any device. Desktop, tablet, or mobile.',
+              },
+            ].map((feature, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Box
+                  sx={{
+                    p: 5,
+                    height: '100%',
+                    background: 'rgba(255,255,255,0.03)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 3,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: 'rgba(255,255,255,0.05)',
+                      borderColor: 'rgba(102, 126, 234, 0.3)',
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 20px 60px rgba(102, 126, 234, 0.2)',
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'inline-flex',
+                      p: 2,
+                      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: 2,
+                      color: '#667eea',
+                      mb: 3,
+                      border: '1px solid rgba(102, 126, 234, 0.2)',
+                    }}
+                  >
+                    {feature.icon}
+                  </Box>
+                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'white' }}>
+                    {feature.title}
+                  </Typography>
+                  <Typography sx={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8 }}>
+                    {feature.desc}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* CTA Section */}
+        <Box
+          sx={{
+            py: { xs: 10, md: 15 },
+            textAlign: 'center',
+          }}
         >
-          Get Started
-        </Button>
-      </Box>
-
-      {/* Features Section */}
-      <Box sx={{ my: 6 }}>
-        <Typography variant="h4" component="h2" gutterBottom>
-          Features
-        </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" gutterBottom>
-              Easy Text Input
-            </Typography>
-            <Typography>
-              Simply input your text and let our software do the rest. Creating flashcards has never been easier.
-            </Typography>
-
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-              Smart Flashcards
-            </Typography>
-            <Typography>
-              Our AI intelligently breaks down your text into concise flashcards, perfect for studying.
-            </Typography>
-
-            <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-              Accessible Anywhere
-            </Typography>
-            <Typography>
-              Access your flashcards from any device, at any time. Study on the go with ease.
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Pricing Section */}
-      <Box sx={{ my: 6, textAlign: "center" }}>
-        <Typography variant="h4" component="h2" gutterBottom>
-          Pricing
-        </Typography>
-        <Grid container spacing={4} justifyContent="center">
-          {/* Basic Plan */}
-          <Grid item xs={12} md={6}>
-            <Box
+          <Box
+            sx={{
+              p: { xs: 4, md: 8 },
+              borderRadius: 4,
+              background: 'rgba(102, 126, 234, 0.08)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(102, 126, 234, 0.2)',
+              boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)',
+            }}
+          >
+            <Typography
+              variant="h2"
               sx={{
-                p: 3,
-                border: "1px solid",
-                borderColor: "grey.300",
-                borderRadius: 2,
-                mb: 4,
+                fontSize: { xs: '2rem', md: '3.5rem' },
+                fontWeight: 700,
+                mb: 3,
+                color: 'white',
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Basic
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                $5/month
-              </Typography>
-              <Typography>
-                Access to basic flashcard features and limited storage. Perfect for casual learners.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-                Choose Basic
-              </Button>
-            </Box>
-
-            {/* Pro Plan */}
-            <Box
+              Ready to transform your learning?
+            </Typography>
+            <Typography
               sx={{
-                p: 3,
-                border: "1px solid",
-                borderColor: "grey.300",
-                borderRadius: 2,
+                fontSize: '1.2rem',
+                mb: 5,
+                color: 'rgba(255,255,255,0.7)',
+                maxWidth: '600px',
+                mx: 'auto',
               }}
             >
-              <Typography variant="h5" gutterBottom>
-                Pro
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                $10/month
-              </Typography>
-              <Typography>
-                Unlimited flashcards, enhanced features, and priority support for power users.
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
-                Choose Pro
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+              Join thousands of students and professionals using AI to study smarter.
+            </Typography>
+            <Button
+              size="large"
+              onClick={() => user ? router.push('/generate') : handleSignIn()}
+              endIcon={<ArrowForwardIcon />}
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                px: 5,
+                py: 2,
+                fontSize: '1.2rem',
+                fontWeight: 600,
+                borderRadius: 2,
+                textTransform: 'none',
+                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.4)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.5)',
+                },
+              }}
+            >
+              Start Creating Now
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+
+      {/* Footer */}
+      <Box
+        sx={{
+          py: 6,
+          textAlign: 'center',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+        }}
+      >
+        <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>
+          © 2025 Flashcard SaaS. Built with Next.js & AI.
+        </Typography>
       </Box>
-    </Container>
+    </Box>
   );
 }

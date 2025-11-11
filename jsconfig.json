@@ -2,7 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/firebase": ["./app/firebase.js"],
+      "@/context/*": ["./app/context/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", ".next"]
 }

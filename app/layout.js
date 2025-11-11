@@ -1,21 +1,31 @@
-// app/layout.js
-import { ClerkProvider } from "@clerk/nextjs";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
+import { AuthProvider } from './context/AuthContext';
+import ThemeRegistry from './ThemeRegistry';
+import Navbar from './components/Navbar';
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-space-grotesk',
+});
 
 export const metadata = {
-  title: "Flashcards SaaS",
-  description: "An interactive flashcard learning platform",
+  title: "Flashcard SaaS - AI-Powered Learning",
+  description: "Transform your text into interactive flashcards with AI",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={spaceGrotesk.variable}>
+      <body className={spaceGrotesk.className}>
+        <ThemeRegistry>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
+        </ThemeRegistry>
+      </body>
+    </html>
   );
 }
