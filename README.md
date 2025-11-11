@@ -1,13 +1,14 @@
 
 # Flashcard SaaS - AI-Powered Learning Platform
 
-A modern, full-stack flashcard application built with Next.js 15 that uses AI to automatically generate flashcards from text or PDF documents. Features a sleek, dark glassmorphic UI with smooth animations and real-time database synchronization.
+> Built by **Samyukta04**
+
+A modern, full-stack flashcard application built with Next.js 15 that uses AI to automatically generate flashcards from text. Features a sleek, dark glassmorphic UI with smooth animations and real-time database synchronization.
 
 ## ✨ Features
 
 - **AI-Powered Generation** - Automatically create flashcards from any text using Groq AI (Llama 3.1)
-- **PDF Support** - Upload PDF files and extract text to generate flashcards
-- **Interactive Flashcards** - Smooth flip animations with modern card design
+- **Interactive Flashcards** - Smooth 3D flip animations with modern card design
 - **User Authentication** - Secure Google Sign-In with Firebase
 - **Cloud Storage** - Save and organize flashcard collections in Firebase Firestore
 - **Responsive Design** - Beautiful, mobile-friendly interface with glassmorphic effects
@@ -28,7 +29,6 @@ A modern, full-stack flashcard application built with Next.js 15 that uses AI to
 - Groq AI API
 
 **Additional Libraries:**
-- react-pdftotext - PDF text extraction
 - groq-sdk - AI flashcard generation
 - firebase - Authentication & Database
 
@@ -44,13 +44,13 @@ A modern, full-stack flashcard application built with Next.js 15 that uses AI to
 
 1. Clone the repository
 ```
-git clone <your-repo-url>
-cd flashcard-saas
+git clone https://github.com/Samyukta04/test-flashcard.git
+cd test-flashcard
 ```
 
 2. Install dependencies
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 
 3. Create a `.env.local` file in the root directory:
@@ -93,7 +93,7 @@ flashcard-saas/
 │   ├── page.js                # Home page
 │   └── firebase.js            # Firebase configuration
 ├── public/
-├── .env.local                 # Environment variables
+├── .env.local                 # Environment variables (not tracked)
 └── package.json
 ```
 
@@ -102,7 +102,7 @@ flashcard-saas/
 1. **Sign In** - Click "Get Started" and sign in with Google
 2. **Generate Flashcards**:
    - Navigate to the "Generate" page
-   - Either paste text or upload a PDF
+   - Paste your study text
    - Click "Generate Flashcards"
 3. **Save Collection** - Name and save your flashcard set
 4. **Study** - Click on any flashcard to flip and reveal the answer
@@ -114,7 +114,7 @@ flashcard-saas/
 - Smooth 3D flip animations
 - Responsive bento-grid layout
 - Interactive hover effects
-- Modern typography with Space Grotesk font
+- Modern typography
 
 ## 📝 Environment Variables
 
@@ -122,6 +122,15 @@ flashcard-saas/
 |----------|-------------|
 | `NEXT_PUBLIC_FIREBASE_*` | Firebase project configuration |
 | `GROQ_API_KEY` | Groq AI API key for flashcard generation |
+
+## 🚀 Deployment
+
+This app is optimized for deployment on Vercel:
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Add all environment variables in Vercel dashboard
+4. Deploy!
 
 ## 🤝 Contributing
 
