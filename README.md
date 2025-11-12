@@ -5,6 +5,7 @@
 
 A modern, full-stack flashcard application built with Next.js 15 that uses AI to automatically generate flashcards from text. Features a sleek, dark glassmorphic UI with smooth animations and real-time database synchronization.
 
+Link : https://test-flashcard.vercel.app/
 ## ✨ Features
 
 - **AI-Powered Generation** - Automatically create flashcards from any text using Groq AI (Llama 3.1)
