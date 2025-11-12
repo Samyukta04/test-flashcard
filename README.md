@@ -1,74 +1,10 @@
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-# Flashcard SaaS - AI-Powered Learning Platform
+## Getting Started
 
-> Built by **Samyukta04**
+First, run the development server:
 
-A modern, full-stack flashcard application built with Next.js 15 that uses AI to automatically generate flashcards from text. Features a sleek, dark glassmorphic UI with smooth animations and real-time database synchronization.
-
-## ✨ Features
-
-- **AI-Powered Generation** - Automatically create flashcards from any text using Groq AI (Llama 3.1)
-- **Interactive Flashcards** - Smooth 3D flip animations with modern card design
-- **User Authentication** - Secure Google Sign-In with Firebase
-- **Cloud Storage** - Save and organize flashcard collections in Firebase Firestore
-- **Responsive Design** - Beautiful, mobile-friendly interface with glassmorphic effects
-- **Real-time Sync** - Access your flashcards across all devices
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-- Next.js 15.5
-- React 19
-- Material-UI (MUI)
-- CSS3 with custom animations
-
-**Backend:**
-- Next.js API Routes
-- Firebase Authentication
-- Firebase Firestore
-- Groq AI API
-
-**Additional Libraries:**
-- groq-sdk - AI flashcard generation
-- firebase - Authentication & Database
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- Firebase account
-- Groq API account
-
-### Installation
-
-1. Clone the repository
-```
-git clone https://github.com/Samyukta04/test-flashcard.git
-cd test-flashcard
-```
-
-2. Install dependencies
-```
-npm install --legacy-peer-deps
-```
-
-3. Create a `.env.local` file in the root directory:
-```
-# Firebase Configuration
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-
-# Groq API
-GROQ_API_KEY=your_groq_api_key
-```
-
-4. Run the development server
-```
+```bash
 npm run dev
 ```
 
