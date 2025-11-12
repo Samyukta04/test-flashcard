@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { db } from '../firebase'
 import { doc, collection, setDoc, getDoc, writeBatch } from 'firebase/firestore'
-// import pdfToText from 'react-pdftotext'
+import pdfToText from 'react-pdftotext'
 import {
   Container,
   TextField,
